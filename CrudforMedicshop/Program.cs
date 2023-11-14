@@ -7,6 +7,10 @@ using CrudforMedicshop.infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using CrudforMedicshop.Application;
 using CrudforMedicshop.Application.mapping;
+using Microsoft.AspNetCore.RateLimiting;
+using CrudforMedicshop.Application.Validation;
+using FluentValidation.AspNetCore;
+using FluentValidation;
 
 namespace CrudforMedicshop
 {
@@ -23,6 +27,14 @@ namespace CrudforMedicshop
             builder.Services.AddScoped<Iservice<Medicine>, Service>();
             builder.Services.AddDbContext<Mydbcontext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.addmapping();
+            builder.Services.AddFluentValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
+            builder.Services.Configure<RateLimiterOptions>(o => o
+                 .AddFixedWindowLimiter(policyName: "fixed", options =>
+                 {
+                     options.PermitLimit = 10;
+                     options.QueueLimit = 5;
+                 }));
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
