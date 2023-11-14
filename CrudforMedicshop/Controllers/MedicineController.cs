@@ -1,4 +1,5 @@
-﻿using CrudforMedicshop.Application.Interfaces;
+﻿using AutoMapper;
+using CrudforMedicshop.Application.Interfaces;
 using CrudforMedicshop.Domain.Entities;
 using CrudforMedicshop.Domain.Models;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +12,7 @@ namespace CrudforMedicshop.Controllers
     public class MedicineController : ControllerBase
     {
         private readonly Iservice<Medicine> _iservice;
+        private readonly IMapper _mapper;
 
         public MedicineController(Iservice<Medicine> service)
         {
@@ -37,15 +39,8 @@ namespace CrudforMedicshop.Controllers
         [HttpPost("Create")]
         public async Task< IActionResult> Create(MedicineForCreateDTO Medicine)
         {
-            Medicine Medicine1 = new Medicine()
-            {
-                CountsofSold=Medicine.CountofSold,
-                CreatedDate = Medicine.CreatedDate,
-                Description = Medicine.Description,
-                Name= Medicine.Name,
-                Type= Medicine.Type,
-                ExpiredDate=Medicine.ExpiredDate,   
-            };
+            Medicine Medicine1 = _mapper.Map<Medicine>(Medicine);
+            
             var result =await _iservice.Create(Medicine1);
             return Ok(result);
         }

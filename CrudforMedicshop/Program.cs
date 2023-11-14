@@ -5,6 +5,8 @@ using CrudforMedicshop.infrastructure.Dbcontext;
 using CrudforMedicshop.infrastructure.Repositories;
 using CrudforMedicshop.infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using CrudforMedicshop.Application;
+using CrudforMedicshop.Application.mapping;
 
 namespace CrudforMedicshop
 {
@@ -20,7 +22,7 @@ namespace CrudforMedicshop
             builder.Services.AddScoped<Irepository<Medicine>, Repository>();
             builder.Services.AddScoped<Iservice<Medicine>, Service>();
             builder.Services.AddDbContext<Mydbcontext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            builder.Services.addmapping();
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
