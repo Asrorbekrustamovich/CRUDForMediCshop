@@ -13,7 +13,7 @@ namespace CrudforMedicshop.Application.mapping
     {
         public addmap()
         {
-            CreateMap<Medicine, MedicineforGetDTO>();
+            CreateMap<MedicineForCreateDTO,Medicine>();
         }
     }
 }

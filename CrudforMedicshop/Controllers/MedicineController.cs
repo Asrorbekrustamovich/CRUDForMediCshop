@@ -14,7 +14,7 @@ namespace CrudforMedicshop.Controllers
         private readonly Iservice<Medicine> _iservice;
         private readonly IMapper _mapper;
 
-        public MedicineController(Iservice<Medicine> service, IMapper mapper = null)
+        public MedicineController(Iservice<Medicine> service, IMapper mapper)
         {
             _iservice = service;
             _mapper = mapper;
@@ -40,7 +40,17 @@ namespace CrudforMedicshop.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create(MedicineForCreateDTO Medicine)
         {
-            Medicine Medicine1 =_mapper.Map<Medicine>(Medicine);
+            Medicine Medicine1 = _mapper.Map<Medicine>(Medicine);
+            //{
+            //    CountsofSold = Medicine.CountofSold,
+            //    CreatedDate=Medicine.CreatedDate,
+            //    Description = Medicine.Description,
+            //    ExpiredDate = Medicine.ExpiredDate,
+            //    Name = Medicine.Name,
+            //    Type= Medicine.Type,
+            //    Summa= Medicine.Summa,
+               
+            //};
 
             var result = await _iservice.Create(Medicine1);
             return Ok(result);

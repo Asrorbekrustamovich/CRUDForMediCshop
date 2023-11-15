@@ -94,10 +94,10 @@ namespace CrudforMedicshop.infrastructure.Repositories
                 Description = ThemostsoldMedicine.First().Description,
                 Name = ThemostsoldMedicine.First().Name,
                 Type = ThemostsoldMedicine.First().Type,
-                Summa=ThemostsoldMedicine.First().Summa
+                 Summa = ThemostsoldMedicine.First().Summa
 
-                
-            };
+
+             };
             return Mostsold;
         }
 
@@ -110,7 +110,7 @@ namespace CrudforMedicshop.infrastructure.Repositories
                 updatedobject.Name = entity.Name;
                 updatedobject.Type = entity.Type;
                 updatedobject.Summa = entity.Summa;
-               
+
                 _context.Medicines.Update(updatedobject);
                 _context.SaveChanges();
                 return true;
