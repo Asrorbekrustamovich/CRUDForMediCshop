@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CrudforMedicshop.infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initdb : Migration
+    public partial class intdb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,6 +22,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
                     Description = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false),
                     CountsofSold = table.Column<int>(type: "integer", nullable: false),
+                    Summa = table.Column<double>(type: "double precision", nullable: false),
                     CreatedDate = table.Column<DateOnly>(type: "date", nullable: false),
                     ExpiredDate = table.Column<DateOnly>(type: "date", nullable: false)
                 },

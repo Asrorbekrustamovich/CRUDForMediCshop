@@ -12,6 +12,7 @@ namespace CrudforMedicshop.Domain.Models
         public string Description { get; set; }
         public string Type { get; set; }
         public int CountofSold { get; set; }
+        public double Summa { get; set; }
         public DateOnly CreatedDate { get; set; }
         public DateOnly ExpiredDate { get; set; }
     }

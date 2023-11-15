@@ -19,14 +19,7 @@ namespace CrudforMedicshop.infrastructure.Services
 
         public async Task<Medicine> Create(Medicine entity)
         {
-            if (_repostory.create(entity) != null)
-            {
-                return entity;
-            }
-            else
-            {
-                return null;
-            }
+            return entity;
         }
 
         public async Task< string> Delete(int deletedid)

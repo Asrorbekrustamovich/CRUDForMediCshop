@@ -20,13 +20,12 @@ namespace CrudforMedicshop.infrastructure.Repositories
             _context = Mydbcontext;
         }
 
-        public async Task< Medicine> create(Medicine entity)
+        public async Task<Medicine> create(Medicine entity)
         {
-                _context.Medicines.Add(entity);
-                _context.SaveChanges();
-                return  entity;
+            _context.Medicines.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
-
         public async Task<bool> delete(int deleteid)
         {
             var deletedobject =  await _context.Medicines.FindAsync(deleteid);
@@ -94,7 +93,9 @@ namespace CrudforMedicshop.infrastructure.Repositories
             {   id= ThemostsoldMedicine.First().id,
                 Description = ThemostsoldMedicine.First().Description,
                 Name = ThemostsoldMedicine.First().Name,
-                Type = ThemostsoldMedicine.First().Type
+                Type = ThemostsoldMedicine.First().Type,
+                Summa=ThemostsoldMedicine.First().Summa
+
                 
             };
             return Mostsold;
@@ -108,6 +109,8 @@ namespace CrudforMedicshop.infrastructure.Repositories
               updatedobject.id = entity.id;
                 updatedobject.Name = entity.Name;
                 updatedobject.Type = entity.Type;
+                updatedobject.Summa = entity.Summa;
+               
                 _context.Medicines.Update(updatedobject);
                 _context.SaveChanges();
                 return true;

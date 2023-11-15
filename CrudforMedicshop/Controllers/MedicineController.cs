@@ -14,9 +14,10 @@ namespace CrudforMedicshop.Controllers
         private readonly Iservice<Medicine> _iservice;
         private readonly IMapper _mapper;
 
-        public MedicineController(Iservice<Medicine> service)
+        public MedicineController(Iservice<Medicine> service, IMapper mapper = null)
         {
             _iservice = service;
+            _mapper = mapper;
         }
 
         [ HttpGet("GetallMedicine")]
@@ -37,11 +38,11 @@ namespace CrudforMedicshop.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task< IActionResult> Create(MedicineForCreateDTO Medicine)
+        public async Task<IActionResult> Create(MedicineForCreateDTO Medicine)
         {
-            Medicine Medicine1 = _mapper.Map<Medicine>(Medicine);
-            
-            var result =await _iservice.Create(Medicine1);
+            Medicine Medicine1 =_mapper.Map<Medicine>(Medicine);
+
+            var result = await _iservice.Create(Medicine1);
             return Ok(result);
         }
 

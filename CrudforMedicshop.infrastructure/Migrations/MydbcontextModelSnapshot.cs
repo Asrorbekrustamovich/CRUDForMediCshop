@@ -47,6 +47,9 @@ namespace CrudforMedicshop.infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<double>("Summa")
+                        .HasColumnType("double precision");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");

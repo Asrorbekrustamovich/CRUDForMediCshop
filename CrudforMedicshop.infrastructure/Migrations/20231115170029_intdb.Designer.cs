@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CrudforMedicshop.infrastructure.Migrations
 {
     [DbContext(typeof(Mydbcontext))]
-    [Migration("20231005162611_initdb")]
-    partial class initdb
+    [Migration("20231115170029_intdb")]
+    partial class intdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,6 +49,9 @@ namespace CrudforMedicshop.infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<double>("Summa")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Type")
                         .IsRequired()
