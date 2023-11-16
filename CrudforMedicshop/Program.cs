@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.RateLimiting;
 using CrudforMedicshop.Application.Validation;
 using FluentValidation.AspNetCore;
 using FluentValidation;
+using System.Threading.RateLimiting;
+using Microsoft.Extensions.Options;
 
 namespace CrudforMedicshop
 {
@@ -32,9 +34,36 @@ namespace CrudforMedicshop
             builder.Services.Configure<RateLimiterOptions>(o => o
                  .AddFixedWindowLimiter(policyName: "fixed", options =>
                  {
-                     options.PermitLimit = 10;
-                     options.QueueLimit = 5;
+                     options.PermitLimit = 1;
+                     options.QueueLimit = 4;
+                     options.Window=TimeSpan.FromSeconds(30);
+                     options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
                  }));
+            builder.Services.AddRateLimiter(_ => _
+       .AddSlidingWindowLimiter(policyName: "sliding", options =>
+         {
+          options.PermitLimit = 5;
+          options.Window = TimeSpan.FromSeconds(1);
+          options.SegmentsPerWindow = 4;
+          options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+          options.QueueLimit = 5;
+         }));
+            builder.Services.AddRateLimiter(_ => _.AddTokenBucketLimiter(policyName: "Tokenbox", opt =>
+            {
+                opt.ReplenishmentPeriod = TimeSpan.FromSeconds(30);
+                opt.QueueLimit = 5;
+                opt.TokenLimit = 1;
+                opt.TokensPerPeriod = 8; 
+                opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            }
+            ));
+            builder.Services.AddRateLimiter(_ => _
+    .AddConcurrencyLimiter(policyName:" concurrencyPolicy", options =>
+    {
+        options.PermitLimit = 4;
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 5;
+    }));
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -47,7 +76,7 @@ namespace CrudforMedicshop
 
             app.UseAuthorization();
 
-
+            app.UseRateLimiter();
             app.MapControllers();
 
             app.Run();

@@ -23,7 +23,7 @@ namespace CrudforMedicshop.infrastructure.Repositories
         public async Task<Medicine> create(Medicine entity)
         {
             _context.Medicines.Add(entity);
-            await _context.SaveChangesAsync();
+           _context.SaveChanges();
             return entity;
         }
         public async Task<bool> delete(int deleteid)

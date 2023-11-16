@@ -19,6 +19,7 @@ namespace CrudforMedicshop.infrastructure.Services
 
         public async Task<Medicine> Create(Medicine entity)
         {
+            await _repostory.create(entity);
             return entity;
         }
 

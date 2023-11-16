@@ -4,6 +4,7 @@ using CrudforMedicshop.Domain.Entities;
 using CrudforMedicshop.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CrudforMedicshop.Controllers
 {
@@ -21,6 +22,9 @@ namespace CrudforMedicshop.Controllers
         }
 
         [ HttpGet("GetallMedicine")]
+        //[EnableRateLimiting("fixed")]
+        //[EnableRateLimiting("Tokenbox")]
+        [EnableRateLimiting("concurrencyPolicy")]
         public async Task< IActionResult> Getall()
         {
             return Ok(await _iservice.Getall());
@@ -41,16 +45,6 @@ namespace CrudforMedicshop.Controllers
         public async Task<IActionResult> Create(MedicineForCreateDTO Medicine)
         {
             Medicine Medicine1 = _mapper.Map<Medicine>(Medicine);
-            //{
-            //    CountsofSold = Medicine.CountofSold,
-            //    CreatedDate=Medicine.CreatedDate,
-            //    Description = Medicine.Description,
-            //    ExpiredDate = Medicine.ExpiredDate,
-            //    Name = Medicine.Name,
-            //    Type= Medicine.Type,
-            //    Summa= Medicine.Summa,
-               
-            //};
 
             var result = await _iservice.Create(Medicine1);
             return Ok(result);
