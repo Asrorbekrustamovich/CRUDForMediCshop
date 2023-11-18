@@ -2,6 +2,7 @@
 using CrudforMedicshop.Application.Interfaces;
 using CrudforMedicshop.Domain.Entities;
 using CrudforMedicshop.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -22,9 +23,9 @@ namespace CrudforMedicshop.Controllers
         }
 
         [ HttpGet("GetallMedicine")]
-        //[EnableRateLimiting("fixed")]
+        [EnableRateLimiting("fixed")]
         //[EnableRateLimiting("Tokenbox")]
-        [EnableRateLimiting("concurrencyPolicy")]
+        //[EnableRateLimiting("concurrencyPolicy")]
         public async Task< IActionResult> Getall()
         {
             return Ok(await _iservice.Getall());
@@ -42,6 +43,7 @@ namespace CrudforMedicshop.Controllers
         }
 
         [HttpPost("Create")]
+        [Authorize]
         public async Task<IActionResult> Create(MedicineForCreateDTO Medicine)
         {
             Medicine Medicine1 = _mapper.Map<Medicine>(Medicine);
@@ -51,6 +53,7 @@ namespace CrudforMedicshop.Controllers
         }
 
         [HttpDelete("Delete")]
+        [Authorize]
         public async Task< IActionResult> Delete(int id)
         {
             var result = await _iservice.Delete(id);
@@ -58,6 +61,7 @@ namespace CrudforMedicshop.Controllers
         }
 
         [HttpPatch("Update")]
+        [Authorize]
         public async Task< IActionResult> Update(Medicine Medicine)
         {
             var result = await _iservice.Update(Medicine);
