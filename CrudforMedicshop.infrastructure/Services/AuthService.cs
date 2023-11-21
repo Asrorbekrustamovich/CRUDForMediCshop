@@ -80,18 +80,22 @@ namespace CrudforMedicshop.infrastructure.Services
         public async Task<(int, string)> Registration(RegisteredModel1 model, string role)
         {
             var UserExists =await _userManager.FindByNameAsync(model.Username);
-           
+            Console.WriteLine(UserExists);
             if (UserExists != null)
             {
                 return (0, "User is Already exist");
             }
             ApplicationUser1 user = new()
             {
-                Email =model.Email,
-                SecurityStamp=Guid.NewGuid().ToString(),
-                UserName= model.Username,
-                FirstName=model.Firstname,
-                LastName=model.Lastname,
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username,
+                FirstName = model.Firstname,
+                LastName = model.Lastname,
+                RefreshTokenExpiryTime =DateTime.UtcNow.AddDays(1),
+                AccessToken=GenerateAccessToken(),
+                RefreshToken=GenerateRefreshToken()
+              
             };
             var CreatedUserResult=await _userManager.CreateAsync(user,model.Password);
 
@@ -110,6 +114,16 @@ namespace CrudforMedicshop.infrastructure.Services
             }
             return (1, "User is Created Successfully!");
         }
+        private string GenerateAccessToken()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var random = new Random();
+            var accessToken = new string(Enumerable.Repeat(chars, 32)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+
+            return accessToken;
+        }
+
         public async Task<TokenViewModel>GetRefreshToken(GetRefreshTokenViewModel model)
         {
             TokenViewModel tokenViewModel = new();

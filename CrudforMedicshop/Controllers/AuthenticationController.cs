@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Authorization;
+﻿using CrudforMedicshop.Application.Interfaces;
 using CrudforMedicshop.Domain.Models;
-using CrudforMedicshop.Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CrudforMedicshop.Controllers
 {
@@ -12,7 +8,7 @@ namespace CrudforMedicshop.Controllers
     [ApiController]
     public class AuthenticationController : Controller
     {
-       private readonly IAuthService _authService;
+        private readonly IAuthService _authService;
         private readonly ILogger<AuthenticationController> _logger;
 
         public AuthenticationController(IAuthService authService, ILogger<AuthenticationController> logger)
@@ -22,16 +18,16 @@ namespace CrudforMedicshop.Controllers
         }
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult>Login(LoginModel1 model)
+        public async Task<IActionResult> Login(LoginModel1 model)
         {
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest("invalid playload");
                 }
                 var result = await _authService.Login(model);
-                if(result.StatusCode==0)
+                if (result.StatusCode == 0)
                 {
                     return BadRequest(result.StatusMessage);
                 }
@@ -44,30 +40,26 @@ namespace CrudforMedicshop.Controllers
             }
         }
         [HttpPost("Registration")]
-        public async Task<IActionResult>Register(RegisteredModel1 model)
+        public async Task<IActionResult> Register(RegisteredModel1 model)
         {
             try
             {
-                if(!ModelState.IsValid)
-                {
-                    return BadRequest("invalid payload");
-                }
                 var (status, message) = await _authService.Registration(model, UserRoles1.Admin);
                 Console.WriteLine(status);
-                if(status==0)
+                if (status == 0)
                 {
                     return BadRequest(message);
                 }
                 return CreatedAtAction(nameof(Register), model);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        }
-
-
-
     }
+
+
+
+}
