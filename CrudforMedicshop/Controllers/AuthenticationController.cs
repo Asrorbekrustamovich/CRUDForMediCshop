@@ -53,6 +53,7 @@ namespace CrudforMedicshop.Controllers
                     return BadRequest("invalid payload");
                 }
                 var (status, message) = await _authService.Registration(model, UserRoles1.Admin);
+                Console.WriteLine(status);
                 if(status==0)
                 {
                     return BadRequest(message);
