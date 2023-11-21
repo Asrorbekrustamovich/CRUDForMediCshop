@@ -1,4 +1,5 @@
 ﻿using CrudforMedicshop.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,17 +9,13 @@ using System.Threading.Tasks;
 
 namespace CrudforMedicshop.infrastructure.Dbcontext
 {
-    public class Mydbcontext : DbContext
+    public class ApplicationDbcontext : IdentityDbContext<ApplicationUser>
     {
-       
-        public Mydbcontext()
-        {
-
-        }
-        public Mydbcontext(DbContextOptions<Mydbcontext> options) : base(options)
+        public ApplicationDbcontext(DbContextOptions options) : base(options)
         {
         }
         public DbSet<Medicine> Medicines { get; set; }
+        //public DbSet<ApplicationUser> UsersforMedicshop { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("Server=::1;Port=5432;Database=Hello;user id=postgres;password=123456");

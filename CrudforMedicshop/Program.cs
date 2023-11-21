@@ -15,7 +15,11 @@ using System.Threading.RateLimiting;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
 
 namespace CrudforMedicshop
 {
@@ -30,9 +34,12 @@ namespace CrudforMedicshop
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<Irepository<Medicine>, Repository>();
             builder.Services.AddScoped<Iservice<Medicine>, Service>();
-            builder.Services.AddDbContext<Mydbcontext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+            //builder.Services.AddDbContext<Mydbcontext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<ApplicationDbcontext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.addmapping();
+            builder.Services.AddIdentity<ApplicationUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbcontext>().AddDefaultTokenProviders();
             builder.Services.AddFluentValidation();
+            builder.Services.AddScoped<IAuthService,AuthService>();
             builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
             builder.Services.Configure<RateLimiterOptions>(o => o
                  .AddFixedWindowLimiter(policyName: "fixed", options =>
@@ -76,9 +83,9 @@ namespace CrudforMedicshop
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = "your-issuer",         
-                    ValidAudience = "your-audience",     
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mysecretKey11111111111dasasdasdsadas")) 
+                    ValidIssuer = builder.Configuration["JWTKey:ValidIssuer"],
+                    ValidAudience = builder.Configuration["JWTKey:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTKey:Secret"]))
                 };
                 options.Events = new JwtBearerEvents
                 {
@@ -104,7 +111,7 @@ namespace CrudforMedicshop
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.UseAuthentication();
             app.UseRateLimiter();
             app.MapControllers();
 

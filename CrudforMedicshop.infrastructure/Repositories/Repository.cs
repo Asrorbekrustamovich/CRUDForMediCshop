@@ -13,9 +13,9 @@ namespace CrudforMedicshop.infrastructure.Repositories
 {
     public class Repository : Irepository<Medicine>
     {
-        private readonly Mydbcontext _context;
+        private readonly ApplicationDbcontext _context;
 
-        public Repository(Mydbcontext Mydbcontext)
+        public Repository(ApplicationDbcontext Mydbcontext)
         {
             _context = Mydbcontext;
         }
