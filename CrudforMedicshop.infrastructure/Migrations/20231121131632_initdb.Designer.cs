@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CrudforMedicshop.infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbcontext))]
-    [Migration("20231121093210_initdb")]
+    [Migration("20231121131632_initdb")]
     partial class initdb
     {
         /// <inheritdoc />

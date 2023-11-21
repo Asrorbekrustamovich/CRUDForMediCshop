@@ -13,7 +13,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AspNetRoles",
+                name: "AspNetRoles2",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
@@ -54,7 +54,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Medicines",
+                name: "Medicines2",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -235,13 +235,13 @@ namespace CrudforMedicshop.infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Medicines");
+                name: "Medicines2");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "AspNetRoles2");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "AspNetUsers2");
         }
     }
 }
