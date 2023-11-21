@@ -3,7 +3,6 @@ using System;
 using CrudforMedicshop.infrastructure.Dbcontext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,12 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CrudforMedicshop.infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbcontext))]
-    [Migration("20231121093210_initdb")]
-    partial class initdb
+    [DbContext(typeof(ApplicationDbcontext1))]
+    partial class ApplicationDbcontext1ModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,13 +22,17 @@ namespace CrudforMedicshop.infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CrudforMedicshop.Domain.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("CrudforMedicshop.Domain.Entities.ApplicationUser1", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
+
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -74,6 +75,13 @@ namespace CrudforMedicshop.infrastructure.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -131,7 +139,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("Medicines");
+                    b.ToTable("Medicines1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -277,7 +285,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("CrudforMedicshop.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("CrudforMedicshop.Domain.Entities.ApplicationUser1", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -286,7 +294,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("CrudforMedicshop.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("CrudforMedicshop.Domain.Entities.ApplicationUser1", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -301,7 +309,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CrudforMedicshop.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("CrudforMedicshop.Domain.Entities.ApplicationUser1", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -310,7 +318,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("CrudforMedicshop.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("CrudforMedicshop.Domain.Entities.ApplicationUser1", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

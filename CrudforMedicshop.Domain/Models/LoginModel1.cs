@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CrudforMedicshop.Domain.Models
 {
-    public class LoginModel
+    public class LoginModel1
     {
         [Required(ErrorMessage ="User name is Required")]
         public string? Username { get; set; }

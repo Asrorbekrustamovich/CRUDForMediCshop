@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace CrudforMedicshop.infrastructure.Dbcontext
 {
-    public class ApplicationDbcontext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbcontext1 : IdentityDbContext<ApplicationUser1>
     {
-        public ApplicationDbcontext(DbContextOptions options) : base(options)
+        public ApplicationDbcontext1(DbContextOptions options) : base(options)
         {
         }
-        public DbSet<Medicine> Medicines { get; set; }
+        public DbSet<Medicine> Medicines1 { get; set; }
         //public DbSet<ApplicationUser> UsersforMedicshop { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

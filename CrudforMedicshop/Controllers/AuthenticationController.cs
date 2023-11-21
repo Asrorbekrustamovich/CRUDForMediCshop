@@ -22,7 +22,7 @@ namespace CrudforMedicshop.Controllers
         }
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult>Login(LoginModel model)
+        public async Task<IActionResult>Login(LoginModel1 model)
         {
             try
             {
@@ -30,12 +30,12 @@ namespace CrudforMedicshop.Controllers
                 {
                     return BadRequest("invalid playload");
                 }
-                var (status, message) = await _authService.Login(model);
-                if(status==0)
+                var result = await _authService.Login(model);
+                if(result.StatusCode==0)
                 {
-                    return BadRequest(message);
+                    return BadRequest(result.StatusMessage);
                 }
-                return Ok(message);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -44,7 +44,7 @@ namespace CrudforMedicshop.Controllers
             }
         }
         [HttpPost("Registration")]
-        public async Task<IActionResult>Register(RegisteredModel model)
+        public async Task<IActionResult>Register(RegisteredModel1 model)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace CrudforMedicshop.Controllers
                 {
                     return BadRequest("invalid payload");
                 }
-                var (status, message) = await _authService.Registration(model, UserRoles.Admin);
+                var (status, message) = await _authService.Registration(model, UserRoles1.Admin);
                 if(status==0)
                 {
                     return BadRequest(message);

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CrudforMedicshop.Domain.Models
 {
-    public static class UserRoles
+    public class GetRefreshTokenViewModel
     {
-        public const string Admin = "Admin";
-        public const string User = "User";
+        public string RefreshToken { get; set;}
+        public string AccessToken { get; set;}
     }
 }

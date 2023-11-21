@@ -13,25 +13,25 @@ namespace CrudforMedicshop.infrastructure.Repositories
 {
     public class Repository : Irepository<Medicine>
     {
-        private readonly ApplicationDbcontext _context;
+        private readonly ApplicationDbcontext1 _context;
 
-        public Repository(ApplicationDbcontext Mydbcontext)
+        public Repository(ApplicationDbcontext1 Mydbcontext)
         {
             _context = Mydbcontext;
         }
 
         public async Task<Medicine> create(Medicine entity)
         {
-            _context.Medicines.Add(entity);
+            _context.Medicines1.Add(entity);
            _context.SaveChanges();
             return entity;
         }
         public async Task<bool> delete(int deleteid)
         {
-            var deletedobject =  await _context.Medicines.FindAsync(deleteid);
+            var deletedobject =  await _context.Medicines1.FindAsync(deleteid);
             if (deletedobject != null)
             {
-                _context.Medicines.Remove(deletedobject);
+                _context.Medicines1.Remove(deletedobject);
                 _context.SaveChanges();
                 return true;
             }
@@ -43,7 +43,7 @@ namespace CrudforMedicshop.infrastructure.Repositories
 
         public async Task<IEnumerable<Medicine>> Getall()
         {
-            var getall = _context.Medicines;
+            var getall = _context.Medicines1;
             if (getall != null)
             {
                 return getall;
@@ -56,7 +56,7 @@ namespace CrudforMedicshop.infrastructure.Repositories
 
         public  Task< Medicine> getbyid(int id)
         {
-            var getbyid = _context.Medicines.FirstAsync(x => x.id == id);
+            var getbyid = _context.Medicines1.FirstAsync(x => x.id == id);
             if (getbyid != null)
             {
                 return getbyid;
@@ -73,7 +73,7 @@ namespace CrudforMedicshop.infrastructure.Repositories
             DateTime currentDate = DateTime.Now;
             DateTime previousMonth = currentDate.AddMonths(-1);
             DateOnly previous = DateOnly.FromDateTime(previousMonth);
-           var nearlyExpiredMedicines =  _context.Medicines.Where(x => x.ExpiredDate>=previous); 
+           var nearlyExpiredMedicines =  _context.Medicines1.Where(x => x.ExpiredDate>=previous); 
             return nearlyExpiredMedicines;
    
 
@@ -81,14 +81,14 @@ namespace CrudforMedicshop.infrastructure.Repositories
 
         public   async Task<IEnumerable<Medicine>> SearchbyText(string MedicineName)
         {
-            var Searchbytext = _context.Medicines.Select(x => x).Where(x => x.Name.Contains(MedicineName));
+            var Searchbytext = _context.Medicines1.Select(x => x).Where(x => x.Name.Contains(MedicineName));
             return Searchbytext;
             
         }
 
         public async Task<ThemostsoldMedicine> ThemostsoldMedicine()
         {
-            var ThemostsoldMedicine = _context.Medicines.OrderByDescending(x => x.CountsofSold).Select(x => x);
+            var ThemostsoldMedicine = _context.Medicines1.OrderByDescending(x => x.CountsofSold).Select(x => x);
              ThemostsoldMedicine Mostsold = new ThemostsoldMedicine()
             {   id= ThemostsoldMedicine.First().id,
                 Description = ThemostsoldMedicine.First().Description,
@@ -103,7 +103,7 @@ namespace CrudforMedicshop.infrastructure.Repositories
 
         public async Task<bool> update(Medicine entity)
         {
-            var updatedobject =  await _context.Medicines.FindAsync(entity.id);
+            var updatedobject =  await _context.Medicines1.FindAsync(entity.id);
             if (updatedobject != null)
             {
               updatedobject.id = entity.id;
@@ -111,7 +111,7 @@ namespace CrudforMedicshop.infrastructure.Repositories
                 updatedobject.Type = entity.Type;
                 updatedobject.Summa = entity.Summa;
 
-                _context.Medicines.Update(updatedobject);
+                _context.Medicines1.Update(updatedobject);
                 _context.SaveChanges();
                 return true;
             }

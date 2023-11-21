@@ -35,9 +35,9 @@ namespace CrudforMedicshop
             builder.Services.AddScoped<Irepository<Medicine>, Repository>();
             builder.Services.AddScoped<Iservice<Medicine>, Service>();
             //builder.Services.AddDbContext<Mydbcontext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-            builder.Services.AddDbContext<ApplicationDbcontext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddDbContext<ApplicationDbcontext1>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.addmapping();
-            builder.Services.AddIdentity<ApplicationUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbcontext>().AddDefaultTokenProviders();
+            builder.Services.AddIdentity<ApplicationUser1,IdentityRole>().AddEntityFrameworkStores<ApplicationDbcontext1>().AddDefaultTokenProviders();
             builder.Services.AddFluentValidation();
             builder.Services.AddScoped<IAuthService,AuthService>();
             builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();

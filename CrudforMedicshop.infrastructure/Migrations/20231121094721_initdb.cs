@@ -33,6 +33,9 @@ namespace CrudforMedicshop.infrastructure.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
+                    AccessToken = table.Column<string>(type: "text", nullable: false),
+                    RefreshToken = table.Column<string>(type: "text", nullable: false),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -54,7 +57,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Medicines",
+                name: "Medicines1",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
@@ -69,7 +72,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Medicines", x => x.id);
+                    table.PrimaryKey("PK_Medicines1", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -235,7 +238,7 @@ namespace CrudforMedicshop.infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Medicines");
+                name: "Medicines1");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
