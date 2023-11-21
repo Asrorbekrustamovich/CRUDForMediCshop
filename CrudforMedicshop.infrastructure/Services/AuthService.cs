@@ -4,6 +4,7 @@ using CrudforMedicshop.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,71 +21,90 @@ namespace CrudforMedicshop.infrastructure.Services
         private readonly UserManager<ApplicationUser1> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IConfiguration configuration, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser1> userManager)
+        public AuthService(
+            IConfiguration configuration,
+            RoleManager<IdentityRole> roleManager,
+            UserManager<ApplicationUser1> userManager,
+            ILogger<AuthService> logger)
         {
             _configuration = configuration;
             _roleManager = roleManager;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task<TokenViewModel> Login(LoginModel1 model)
         {
             TokenViewModel tokenViewModel = new();
             var user = await _userManager.FindByNameAsync(model.Username);
-            if(user == null)
+
+            if (user == null)
             {
                 tokenViewModel.StatusCode = 0;
-                tokenViewModel.StatusMessage = "invalid username";
+                tokenViewModel.StatusMessage = "Invalid username";
                 return tokenViewModel;
             }
-            var userroles=await _userManager.GetRolesAsync(user);
+
+            var userRoles = await _userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
+
+            foreach (var userRole in userRoles)
             {
-                new Claim(ClaimTypes.Name,user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
-            };
-            foreach(var userrole in userroles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userrole));
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
             }
+
             tokenViewModel.AccessToken = Generatetoken(authClaims);
             tokenViewModel.RefreshToken = GenerateRefreshToken();
             tokenViewModel.StatusCode = 1;
             tokenViewModel.StatusMessage = "Success";
-            var RefreshTokenValidityInDays = Convert.ToInt64(_configuration["JWTKey:RefreshTokenValidityInDays"]);
+
+            var refreshTokenValidityInDays = Convert.ToInt64(_configuration["JWTKey:RefreshTokenValidityInDays"]);
+
+            // Convert local time to UTC before storing in the database
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenValidityInDays);
+
             user.RefreshToken = tokenViewModel.RefreshToken;
-            user.RefreshTokenExpiryTime=DateTime.Now.AddDays(RefreshTokenValidityInDays);
+
             await _userManager.UpdateAsync(user);
             return tokenViewModel;
         }
 
+
+
         private string Generatetoken(IEnumerable<Claim> authClaims)
         {
-            var authsigningkey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTKey:Secret"]));
-            var TokenExpiryTimeInHour = Convert.ToInt64(_configuration["JWTKey:TokenExpiryTimeInHour"]);
-            var TokenDescriptor = new SecurityTokenDescriptor
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTKey:Secret"]));
+            var tokenExpiryTimeInHour = Convert.ToInt64(_configuration["JWTKey:TokenExpiryTimeInHour"]);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Audience = _configuration["JWTKey:ValidAudience"],
                 Issuer = _configuration["JWTKey:ValidIssuer"],
-                Expires = DateTime.UtcNow.AddMinutes(1),
-                SigningCredentials = new SigningCredentials(authsigningkey, SecurityAlgorithms.HmacSha256),
+                Expires = DateTime.UtcNow.AddMinutes(tokenExpiryTimeInHour),
+                SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256),
                 Subject = new ClaimsIdentity(authClaims)
-
             };
+
             var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(TokenDescriptor);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
 
         public async Task<(int, string)> Registration(RegisteredModel1 model, string role)
         {
-            var UserExists =await _userManager.FindByNameAsync(model.Username);
-            Console.WriteLine(UserExists);
-            if (UserExists != null)
+            var userExists = await _userManager.FindByNameAsync(model.Username);
+
+            if (userExists != null)
             {
-                return (0, "User is Already exist");
+                return (0, "User is already exist");
             }
+
             ApplicationUser1 user = new()
             {
                 Email = model.Email,
@@ -92,28 +112,31 @@ namespace CrudforMedicshop.infrastructure.Services
                 UserName = model.Username,
                 FirstName = model.Firstname,
                 LastName = model.Lastname,
-                RefreshTokenExpiryTime =DateTime.UtcNow.AddDays(1),
-                AccessToken=GenerateAccessToken(),
-                RefreshToken=GenerateRefreshToken()
-              
+                RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1),
+                AccessToken = GenerateAccessToken(),
+                RefreshToken = GenerateRefreshToken()
             };
-            var CreatedUserResult=await _userManager.CreateAsync(user,model.Password);
 
-           Console.WriteLine(CreatedUserResult);
-            if (!CreatedUserResult.Succeeded) 
+            var createdUserResult = await _userManager.CreateAsync(user, model.Password);
+
+            if (!createdUserResult.Succeeded)
             {
-                return (0, "UserCreation is Failed,please Check your user details and try again");
+                return (0, "User creation failed. Please check your user details and try again");
             }
-            if(! await _roleManager.RoleExistsAsync(role))
+
+            if (!await _roleManager.RoleExistsAsync(role))
             {
                 await _roleManager.CreateAsync(new IdentityRole(role));
             }
+
             if (await _roleManager.RoleExistsAsync(role))
             {
                 await _userManager.AddToRoleAsync(user, role);
             }
-            return (1, "User is Created Successfully!");
+
+            return (1, "User is created successfully!");
         }
+
         private string GenerateAccessToken()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -124,63 +147,68 @@ namespace CrudforMedicshop.infrastructure.Services
             return accessToken;
         }
 
-        public async Task<TokenViewModel>GetRefreshToken(GetRefreshTokenViewModel model)
+        public async Task<TokenViewModel> GetRefreshToken(GetRefreshTokenViewModel model)
         {
             TokenViewModel tokenViewModel = new();
-            var Principal = GetPrincipalFromExpiredToken(model.AccessToken);
-            string username = Principal.Identity.Name;
-            var user=await _userManager.FindByNameAsync(username);
-            if(user==null||user.RefreshToken!=model.RefreshToken||user.RefreshTokenExpiryTime<=DateTime.Now) 
+            var principal = GetPrincipalFromExpiredToken(model.AccessToken);
+            string username = principal.Identity.Name;
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user == null || user.RefreshToken != model.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
                 tokenViewModel.StatusCode = 0;
-                tokenViewModel.StatusMessage = "invalid access token or refresh token";
+                tokenViewModel.StatusMessage = "Invalid access token or refresh token";
                 return tokenViewModel;
             }
-            var AuthClaims = new List<Claim>
+
+            var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name,user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
-
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
-            var newAccessToken = Generatetoken(AuthClaims);
-            var NewRefreshToken = GenerateRefreshToken();
-            user.RefreshToken = NewRefreshToken;
+
+            var newAccessToken = Generatetoken(authClaims);
+            var newRefreshToken = GenerateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+
             await _userManager.UpdateAsync(user);
+
             tokenViewModel.StatusCode = 1;
-            tokenViewModel.StatusMessage = "success";
-            tokenViewModel.AccessToken= newAccessToken;
-            tokenViewModel.RefreshToken = NewRefreshToken;
+            tokenViewModel.StatusMessage = "Success";
+            tokenViewModel.AccessToken = newAccessToken;
+            tokenViewModel.RefreshToken = newRefreshToken;
+
             return tokenViewModel;
-
-
         }
 
-        private ClaimsPrincipal GetPrincipalFromExpiredToken(string? token)
+        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
-            var TokenValidationParametr = new TokenValidationParameters
+            var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = false,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTKey:Secret"])),
-                ValidateLifetime = false,
-
+                ValidateLifetime = false
             };
-            var Tokenhandler = new JwtSecurityTokenHandler();
-            var principal=Tokenhandler.ValidateToken(token, TokenValidationParametr,out SecurityToken securityToken);
-            if(securityToken is not JwtSecurityToken jwtSecurityToken||!jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,StringComparison.InvariantCultureIgnoreCase)) 
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
+            if (!(securityToken is JwtSecurityToken jwtSecurityToken) || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new SecurityTokenException("invalid Token");
+                throw new SecurityTokenException("Invalid token");
             }
+
             return principal;
         }
 
         public static string GenerateRefreshToken()
         {
-            var randomnumber=new byte[64];
-            using var rng=RandomNumberGenerator.Create();
-            rng.GetBytes(randomnumber);
-            return Convert.ToBase64String(randomnumber);
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
         }
     }
 }
