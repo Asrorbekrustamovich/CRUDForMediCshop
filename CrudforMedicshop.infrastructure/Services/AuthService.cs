@@ -74,7 +74,7 @@ namespace CrudforMedicshop.infrastructure.Services
 
         public async Task<(int, string)> Registration(RegisteredModel1 model)
         {
-            var userExists =  _dbcontext1.UserforRefresh.Select(x=>x).Where(x=>x.UserName==model.Username);
+            var userExists =  _dbcontext1.UserforRefresh.Select(x=>x).Where(x=>x.UserName==model.Username).FirstOrDefault();
 
             if (userExists!= null)
             {
