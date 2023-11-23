@@ -38,7 +38,7 @@ namespace CrudforMedicshop
             builder.Services.AddDbContext<ApplicationDbcontext1>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.addmapping();
             builder.Services.AddFluentValidation();
-            builder.Services.AddScoped<IAuthService,AuthService>();
+            //builder.Services.AddScoped<IAuthService,AuthService>();
             builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
             builder.Services.Configure<RateLimiterOptions>(o => o
                  .AddFixedWindowLimiter(policyName: "fixed", options =>

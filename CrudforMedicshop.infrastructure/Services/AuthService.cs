@@ -14,7 +14,8 @@ using System.Text;
 namespace CrudforMedicshop.infrastructure.Services
 {
     public class AuthService : IAuthService
-    {   private readonly ApplicationDbcontext1 _dbcontext1;
+    {
+        private readonly ApplicationDbcontext1 _dbcontext1;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthService> _logger;
 
@@ -29,11 +30,12 @@ namespace CrudforMedicshop.infrastructure.Services
         }
 
         public async Task<TokenViewModel> Login(LoginModel1 model)
-        { var user = _dbcontext1.UserforRefresh.Select(x=>x).Where(x=>x.UserName==model.Username).First();
+        {
+            var user = _dbcontext1.UserforRefresh.Select(x => x).Where(x => x.username == model.Username).First();
             TokenViewModel tokenViewModel = new();
             var authClaims = new List<Claim>
     {
-        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Name, user.username),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
             tokenViewModel.AccessToken = Generatetoken(authClaims);
@@ -46,8 +48,8 @@ namespace CrudforMedicshop.infrastructure.Services
 
             user.RefreshToken = tokenViewModel.RefreshToken;
             user.AccessToken = tokenViewModel.AccessToken;
-              _dbcontext1.UserforRefresh.Update(user);
-             _dbcontext1.SaveChanges();
+            _dbcontext1.UserforRefresh.Update(user);
+            _dbcontext1.SaveChanges();
             return tokenViewModel;
         }
 
@@ -74,32 +76,28 @@ namespace CrudforMedicshop.infrastructure.Services
 
         public async Task<(int, string)> Registration(RegisteredModel1 model)
         {
-            var userExists =  _dbcontext1.UserforRefresh.Select(x=>x).Where(x=>x.UserName==model.Username).FirstOrDefault();
+            var userExists = _dbcontext1.UserforRefresh.Select(x => x).Where(x => x.username == model.Username).FirstOrDefault();
 
-            if (userExists!= null)
+            if (userExists != null)
             {
                 return (0, "User is already exist");
             }
 
             ApplicationUser1 user = new()
             {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username,
-                FirstName = model.Firstname,
-                LastName = model.Lastname,
+                username = model.Username,
                 RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1),
                 AccessToken = GenerateAccessToken(),
                 RefreshToken = GenerateRefreshToken()
             };
 
-            var createdUserResult =  _dbcontext1.UserforRefresh.Add(user);
+            var createdUserResult = _dbcontext1.UserforRefresh.Add(user);
             _dbcontext1.SaveChanges();
             if (createdUserResult == null)
             {
                 return (0, "User creation failed. Please check your user details and try again");
             }
-           
+
             return (1, "User is created successfully!");
         }
 
@@ -129,7 +127,7 @@ namespace CrudforMedicshop.infrastructure.Services
 
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Name, user.username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -137,7 +135,7 @@ namespace CrudforMedicshop.infrastructure.Services
             var newRefreshToken = GenerateRefreshToken();
             user.RefreshToken = newRefreshToken;
 
-             _dbcontext1.UserforRefresh.Update(user);
+            _dbcontext1.UserforRefresh.Update(user);
             _dbcontext1.SaveChanges();
 
             tokenViewModel.StatusCode = 1;
