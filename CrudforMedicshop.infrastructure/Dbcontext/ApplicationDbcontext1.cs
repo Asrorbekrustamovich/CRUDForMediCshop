@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace CrudforMedicshop.infrastructure.Dbcontext
 {
-    public class ApplicationDbcontext1 : IdentityDbContext<ApplicationUser1>
+    public class ApplicationDbcontext1 :DbContext
     {
         public ApplicationDbcontext1(DbContextOptions options) : base(options)
         {
         }
         public DbSet<Medicine> Medicines1 { get; set; }
-        //public DbSet<ApplicationUser> UsersforMedicshop { get; set; }
+        public DbSet<ApplicationUser1> UserforRefresh { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("Server=::1;Port=5432;Database=Hello;user id=postgres;password=123456");
