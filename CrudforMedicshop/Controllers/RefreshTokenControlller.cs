@@ -1,6 +1,7 @@
 ﻿using CrudforMedicshop.Application.Interfaces;
 using CrudforMedicshop.Domain.Entities;
 using CrudforMedicshop.Domain.Models;
+using CrudforMedicshop.infrastructure.Dbcontext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,16 +13,15 @@ namespace CrudforMedicshop.Controllers
     public class RefreshTokenControlller : Controller
     {
         private readonly IAuthService _authService;
-        private readonly ILogger<AuthenticationController> _logger;
         private readonly IConfiguration _configuration;
-        private readonly UserManager<ApplicationUser1> _userManager;
-
-        public RefreshTokenControlller(IAuthService authService, ILogger<AuthenticationController> logger, IConfiguration configuration, UserManager<ApplicationUser1> userManager)
+       private readonly ApplicationDbcontext1 _dbcontext1;
+        private ILogger<AuthenticationController> _logger;
+        public RefreshTokenControlller(IAuthService authService, ILogger<AuthenticationController> logger, IConfiguration configuration,  ApplicationDbcontext1 dbcontext1)
         {
             _authService = authService;
             _logger = logger;
             _configuration = configuration;
-            _userManager = userManager;
+            _dbcontext1 = dbcontext1;
         }
 
         [HttpPost("refresh-token")]
@@ -50,24 +50,25 @@ namespace CrudforMedicshop.Controllers
         [HttpPost("revoke/{username}")]
         public async Task<IActionResult>Revoke(string username)
         {
-            var user=await _userManager.FindByNameAsync(username);
+            var user= _dbcontext1.UserforRefresh.Select(x=>x).Where(x=>x.UserName==username).FirstOrDefault();
             if(user == null)
             {
                 return BadRequest("invalid username");
             }
            user.RefreshToken = null;
-            await _userManager.UpdateAsync(user);
+            _dbcontext1.Update(user);
+            await _dbcontext1.SaveChangesAsync();
             return Ok("success");
         }
         [Authorize]
         [HttpPost("revoke-all")]
         public async Task<IActionResult> RevokeAll()
         {
-            var users = _userManager.Users.ToList();
+            var users = _dbcontext1.UserforRefresh;
             foreach(var user in users)
             {
                 user.RefreshToken = null;
-                await _userManager.UpdateAsync(user);
+                await _dbcontext1.SaveChangesAsync();
             }
             return Ok("success");
         }

@@ -1,6 +1,7 @@
 ﻿using CrudforMedicshop.Application.Interfaces;
 using CrudforMedicshop.Domain.Entities;
 using CrudforMedicshop.Domain.Models;
+using CrudforMedicshop.infrastructure.Dbcontext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -13,61 +14,40 @@ using System.Text;
 namespace CrudforMedicshop.infrastructure.Services
 {
     public class AuthService : IAuthService
-    {
-        private readonly UserManager<ApplicationUser1> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+    {   private readonly ApplicationDbcontext1 _dbcontext1;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthService> _logger;
 
         public AuthService(
             IConfiguration configuration,
-            RoleManager<IdentityRole> roleManager,
-            UserManager<ApplicationUser1> userManager,
-            ILogger<AuthService> logger)
+            ILogger<AuthService> logger,
+            ApplicationDbcontext1 dbcontext1)
         {
             _configuration = configuration;
-            _roleManager = roleManager;
-            _userManager = userManager;
             _logger = logger;
+            _dbcontext1 = dbcontext1;
         }
 
         public async Task<TokenViewModel> Login(LoginModel1 model)
-        {
+        { var user = _dbcontext1.UserforRefresh.Select(x=>x).Where(x=>x.UserName==model.Username).First();
             TokenViewModel tokenViewModel = new();
-            var user = await _userManager.FindByNameAsync(model.Username);
-
-            if (user == null)
-            {
-                tokenViewModel.StatusCode = 0;
-                tokenViewModel.StatusMessage = "Invalid username";
-                return tokenViewModel;
-            }
-
-            var userRoles = await _userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
     {
         new Claim(ClaimTypes.Name, user.UserName),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
-
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
             tokenViewModel.AccessToken = Generatetoken(authClaims);
             tokenViewModel.RefreshToken = GenerateRefreshToken();
             tokenViewModel.StatusCode = 1;
             tokenViewModel.StatusMessage = "Success";
 
             var refreshTokenValidityInDays = Convert.ToInt64(_configuration["JWTKey:RefreshTokenValidityInDays"]);
-
-            // Convert local time to UTC before storing in the database
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(refreshTokenValidityInDays);
 
             user.RefreshToken = tokenViewModel.RefreshToken;
-
-            await _userManager.UpdateAsync(user);
+            user.AccessToken = tokenViewModel.AccessToken;
+              _dbcontext1.UserforRefresh.Update(user);
+             _dbcontext1.SaveChanges();
             return tokenViewModel;
         }
 
@@ -92,11 +72,11 @@ namespace CrudforMedicshop.infrastructure.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task<(int, string)> Registration(RegisteredModel1 model, string role)
+        public async Task<(int, string)> Registration(RegisteredModel1 model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
+            var userExists =  _dbcontext1.UserforRefresh.Select(x=>x).Where(x=>x.UserName==model.Username);
 
-            if (userExists != null)
+            if (userExists!= null)
             {
                 return (0, "User is already exist");
             }
@@ -113,23 +93,13 @@ namespace CrudforMedicshop.infrastructure.Services
                 RefreshToken = GenerateRefreshToken()
             };
 
-            var createdUserResult = await _userManager.CreateAsync(user, model.Password);
-
-            if (!createdUserResult.Succeeded)
+            var createdUserResult =  _dbcontext1.UserforRefresh.Add(user);
+            _dbcontext1.SaveChanges();
+            if (createdUserResult == null)
             {
                 return (0, "User creation failed. Please check your user details and try again");
             }
-
-            if (!await _roleManager.RoleExistsAsync(role))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(role));
-            }
-
-            if (await _roleManager.RoleExistsAsync(role))
-            {
-                await _userManager.AddToRoleAsync(user, role);
-            }
-
+           
             return (1, "User is created successfully!");
         }
 
@@ -148,7 +118,7 @@ namespace CrudforMedicshop.infrastructure.Services
             TokenViewModel tokenViewModel = new();
             var principal = GetPrincipalFromExpiredToken(model.AccessToken);
             string username = principal.Identity.Name;
-            var user = await _userManager.FindByNameAsync(username);
+            var user = await _dbcontext1.UserforRefresh.FindAsync(username);
 
             if (user == null || user.RefreshToken != model.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
@@ -167,7 +137,8 @@ namespace CrudforMedicshop.infrastructure.Services
             var newRefreshToken = GenerateRefreshToken();
             user.RefreshToken = newRefreshToken;
 
-            await _userManager.UpdateAsync(user);
+             _dbcontext1.UserforRefresh.Update(user);
+            _dbcontext1.SaveChanges();
 
             tokenViewModel.StatusCode = 1;
             tokenViewModel.StatusMessage = "Success";

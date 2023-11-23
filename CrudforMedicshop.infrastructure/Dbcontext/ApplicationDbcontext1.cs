@@ -16,10 +16,6 @@ namespace CrudforMedicshop.infrastructure.Dbcontext
         }
         public DbSet<Medicine> Medicines1 { get; set; }
         public DbSet<ApplicationUser1> UserforRefresh { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql("Server=::1;Port=5432;Database=Hello;user id=postgres;password=123456");
-        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

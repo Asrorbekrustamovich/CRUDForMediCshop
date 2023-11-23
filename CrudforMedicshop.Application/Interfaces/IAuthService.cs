@@ -9,7 +9,7 @@ namespace CrudforMedicshop.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<(int, string)> Registration(RegisteredModel1 model, string role);
+        Task<(int, string)> Registration(RegisteredModel1 model);
         Task<TokenViewModel> Login(LoginModel1 model);
         Task<TokenViewModel>GetRefreshToken(GetRefreshTokenViewModel model);
     }

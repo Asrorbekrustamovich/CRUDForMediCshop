@@ -44,7 +44,7 @@ namespace CrudforMedicshop.Controllers
         {
             try
             {
-                var (status, message) = await _authService.Registration(model, UserRoles1.Admin);
+                var (status, message) = await _authService.Registration(model);
                 Console.WriteLine(status);
                 if (status == 0)
                 {
