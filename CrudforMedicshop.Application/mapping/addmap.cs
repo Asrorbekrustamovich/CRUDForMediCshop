@@ -14,6 +14,7 @@ namespace CrudforMedicshop.Application.mapping
         public addmap()
         {
             CreateMap<MedicineForCreateDTO,Medicine>();
+            CreateMap<UserDTO,User>();
         }
     }
 }
