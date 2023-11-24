@@ -52,6 +52,7 @@ namespace CrudforMedicshop.infrastructure.Services
         }
 
 
+
         public async Task<Token> GenerateTokenAsync(User user)
         {
             List<Claim> claims = new()

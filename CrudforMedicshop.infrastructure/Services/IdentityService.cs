@@ -4,6 +4,7 @@ using CrudforMedicshop.Domain.Entities;
 using CrudforMedicshop.Domain.Models;
 using CrudforMedicshop.infrastructure.Dbcontext;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,8 @@ using System.Threading.Tasks;
 namespace CrudforMedicshop.infrastructure.Services
 {
     public class IdentityService : IIdentityService
-    {   private readonly ITokenService _tokenService;
+    {
+        private readonly ITokenService _tokenService;
         private readonly Mydbcontext _mydbcontext;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
@@ -27,8 +29,10 @@ namespace CrudforMedicshop.infrastructure.Services
             _tokenService = tokenService;
             _mydbcontext = mydbcontext;
             _mapper = mapper;
+            _configuration = configuration; 
             _refreshTokenLifetime = int.Parse(_configuration["JWTKey:RefreshTokenValidityInMinutes"]);
         }
+
 
         public Task<Response<bool>> DeleteUserAsync(int Userid)
         {
@@ -60,6 +64,9 @@ namespace CrudforMedicshop.infrastructure.Services
             {
                 return new("user not found",404);
             }
+            Token token = await _tokenService.GenerateTokenAsync(user);
+            bool issuccess = await SaveRefreshToken(token.RefreshToken, user);
+            return issuccess ? new(token) : new("faild to save refresh token");
         }
 
         public  async Task<bool> logoutAsync(string RefreshToken)
@@ -71,6 +78,7 @@ namespace CrudforMedicshop.infrastructure.Services
             }
             refresh.RefreshTokenValue = null;
             _mydbcontext.RefreshTokens.Update(refresh);
+            _mydbcontext.SaveChanges();
             return true;
         }
 
@@ -88,6 +96,11 @@ namespace CrudforMedicshop.infrastructure.Services
 
         public async Task<Response<(Token,User)>> RegisterAsync(UserDTO userDTO)
         {   User user=_mapper.Map<User>(userDTO);
+            var isExistuser = _mydbcontext.Users.Where(x => x.Username.Equals(userDTO.Username));
+            if(isExistuser.Count()>0)
+            {
+                return new("user already exist");
+            }
             user.Password = _tokenService.ComputeSha256hash(user.Password);
             await _mydbcontext.Users.AddAsync(user);
             int effectrows= _mydbcontext.SaveChanges();
@@ -133,6 +146,7 @@ namespace CrudforMedicshop.infrastructure.Services
                     RefreshTokenValue = refreshToken
                 };
                 await _mydbcontext.RefreshTokens.AddAsync(refreshTokenEntity);
+              
             }
             else if(res.Count()==1) 
             {

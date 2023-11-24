@@ -13,6 +13,9 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using System.Threading.RateLimiting;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CrudforMedicshop
 {
@@ -21,7 +24,7 @@ namespace CrudforMedicshop
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -59,6 +62,31 @@ namespace CrudforMedicshop
                 opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
             }
             ));
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.TokenValidationParameters = new()
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["JWTKey:ValidIssuer"],
+                    ValidAudience = builder.Configuration["JWTKey:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTKey:Key"]))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("istokentExpired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
             builder.Services.AddRateLimiter(_ => _
     .AddConcurrencyLimiter(policyName:" concurrencyPolicy", options =>
     {

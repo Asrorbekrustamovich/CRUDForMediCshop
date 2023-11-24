@@ -20,22 +20,35 @@ namespace CrudforMedicshop.Controllers
             _identityService = identityService;
         }
         [HttpPost]
+        [AllowAnonymous]
         public async Task<Response<(Token,User)>>Register(UserDTO user)
         {
              return await _identityService.RegisterAsync(user);
         }
         [HttpPost]
+        [AllowAnonymous]
         public async Task<Response<Token>>Login(Credential credential)
         {
             return await _identityService.LoginAsync(credential);
         }
         [HttpGet]
-        public async Task<Response<bool>>Logout(string Refreshtoken)
+        public async Task<bool>Logout(string Refreshtoken)
         {
             return await _identityService.logoutAsync(Refreshtoken);
         }
         [HttpDelete]
         public async Task<Response<bool>>DeleteUser(int userid)
+        {
+            return await _identityService.DeleteUserAsync(userid);
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<Response<Token>>RefreshToken(Token token)
+        {
+            return await _identityService.RefreshTokenAsync(token);
+        }
+        [HttpPost]
+        public async Task<Response<bool>>Delete(int userid)
         {
             return await _identityService.DeleteUserAsync(userid);
         }
