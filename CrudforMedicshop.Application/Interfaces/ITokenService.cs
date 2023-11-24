@@ -10,7 +10,7 @@ namespace CrudforMedicshop.Application.Interfaces
 {
     public interface ITokenService
     {
-        Task<Token> GenerateTokenAsync(UserDTO user);
+        Task<Token> GenerateTokenAsync(User user);
         Task<string> GenerateRefreshTokenAsync();
         Task<Token> GetNewTokenFromExpiredToken(Token tokens);
     }

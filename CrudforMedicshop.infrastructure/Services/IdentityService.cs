@@ -52,7 +52,7 @@ namespace CrudforMedicshop.infrastructure.Services
             {
                 return new("operation failed");
             }
-            Token token =  await _tokenService.GenerateTokenAsync(userDTO);
+            Token token =  await _tokenService.GenerateTokenAsync(user);
             return new((token, user));
         }
     }
