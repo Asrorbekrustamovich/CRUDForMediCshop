@@ -30,9 +30,9 @@ namespace CrudforMedicshop.Controllers
             return await _identityService.LoginAsync(credential);
         }
         [HttpGet]
-        public async Task<Response<bool>>Logout()
+        public async Task<Response<bool>>Logout(string Refreshtoken)
         {
-            return await _identityService.logoutAsync();
+            return await _identityService.logoutAsync(Refreshtoken);
         }
         [HttpDelete]
         public async Task<Response<bool>>DeleteUser(int userid)

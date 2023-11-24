@@ -13,5 +13,7 @@ namespace CrudforMedicshop.Application.Interfaces
         Task<Token> GenerateTokenAsync(User user);
         Task<string> GenerateRefreshTokenAsync();
         Task<Token> GetNewTokenFromExpiredToken(Token tokens);
+        Task<User>GetClaimsFromExpiredToken(string accesstoken);
+        string ComputeSha256hash(string input);
     }
 }
