@@ -12,7 +12,7 @@ namespace CrudforMedicshop.Application.Interfaces
     {
         Task<Response<(Token,User)>> RegisterAsync(UserDTO user);
         Task<Response<Token>>LoginAsync(Credential credential);
-        Task<bool> logoutAsync(string RefreshToken);
+        Task<(bool,RefreshToken)> logoutAsync(string RefreshToken);
         Task<Response<Token>>RefreshTokenAsync(Token token);
         Task<Response<bool>> DeleteUserAsync(int Userid);
         Task<bool> SaveRefreshToken(string RefreshToken,User user);

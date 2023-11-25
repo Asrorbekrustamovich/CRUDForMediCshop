@@ -69,17 +69,17 @@ namespace CrudforMedicshop.infrastructure.Services
             return issuccess ? new(token) : new("faild to save refresh token");
         }
 
-        public  async Task<bool> logoutAsync(string RefreshToken)
+        public  async Task<(bool,RefreshToken)> logoutAsync(string RefreshToken)
         {
             var refresh=_mydbcontext.RefreshTokens.Where(x=>x.RefreshTokenValue.Equals(RefreshToken)).FirstOrDefault();
             if(refresh==null)
             {
-                return false;
+                return new(false,refresh);
             }
             refresh.RefreshTokenValue = null;
             _mydbcontext.RefreshTokens.Update(refresh);
             _mydbcontext.SaveChanges();
-            return true;
+            return new(true,refresh);
         }
 
         public async Task<Response<Token>> RefreshTokenAsync(Token token)

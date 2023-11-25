@@ -97,10 +97,9 @@ namespace CrudforMedicshop.infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("ExpireTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("RefreshTokenValue")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("UserId")

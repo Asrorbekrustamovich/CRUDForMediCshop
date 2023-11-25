@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CrudforMedicshop.infrastructure.Migrations
 {
     [DbContext(typeof(Mydbcontext))]
-    [Migration("20231124173040_initdb")]
+    [Migration("20231124182958_initdb")]
     partial class initdb
     {
         /// <inheritdoc />
@@ -100,10 +100,9 @@ namespace CrudforMedicshop.infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("ExpireTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("RefreshTokenValue")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("UserId")

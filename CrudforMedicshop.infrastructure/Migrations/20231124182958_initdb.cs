@@ -54,8 +54,8 @@ namespace CrudforMedicshop.infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    RefreshTokenValue = table.Column<string>(type: "text", nullable: false),
-                    ExpireTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    RefreshTokenValue = table.Column<string>(type: "text", nullable: true),
+                    ExpireTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
