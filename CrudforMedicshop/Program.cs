@@ -16,6 +16,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace CrudforMedicshop
 {
@@ -35,6 +37,17 @@ namespace CrudforMedicshop
             builder.Services.AddScoped<IIdentityService, IdentityService>();
             builder.Services.addmapping();
             builder.Services.AddFluentValidation();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
+            });
             builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
             builder.Services.Configure<RateLimiterOptions>(o => o
                  .AddFixedWindowLimiter(policyName: "fixed", options =>
