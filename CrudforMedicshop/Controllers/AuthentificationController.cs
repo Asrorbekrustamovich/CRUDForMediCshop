@@ -32,7 +32,7 @@ namespace CrudforMedicshop.Controllers
             return await _identityService.LoginAsync(credential);
         }
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles ="Admin")]
         public async Task<(bool,RefreshToken)>Logout(string Refreshtoken)
         {
             return await _identityService.logoutAsync(Refreshtoken);

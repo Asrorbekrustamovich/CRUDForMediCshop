@@ -3,6 +3,7 @@ using CrudforMedicshop.Application.Interfaces;
 using CrudforMedicshop.Domain.Entities;
 using CrudforMedicshop.Domain.Models;
 using CrudforMedicshop.infrastructure.Dbcontext;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
@@ -59,7 +60,7 @@ namespace CrudforMedicshop.infrastructure.Services
         public  async Task<Response<Token>> LoginAsync(Credential credential)
         {
             credential.Password=_tokenService.ComputeSha256hash(credential.Password);
-            User user=_mydbcontext.Users.Where(x=>x.Username.Equals(credential.Username)&&x.Password.Equals(credential.Password)).FirstOrDefault();
+            User user=_mydbcontext.Users.Include(x=>x.Roles).Where(x=>x.Username.Equals(credential.Username)&&x.Password.Equals(credential.Password)).FirstOrDefault();
             if (user == null)
             {
                 return new("user not found",404);

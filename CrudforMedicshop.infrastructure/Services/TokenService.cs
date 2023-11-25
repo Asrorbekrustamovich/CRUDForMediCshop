@@ -60,7 +60,10 @@ namespace CrudforMedicshop.infrastructure.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Name),
                 new Claim("id",user.Id.ToString())
             };
-           
+           foreach (var role in user.Roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role,role.Name));
+            }
             var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTKey:Key"]));
             var credentials = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha256);
             double accessTokenLife = double.Parse(_configuration["JWTKey:TokenExpiryTimeInMinutes"]);

@@ -14,7 +14,7 @@ namespace CrudforMedicshop.Application.mapping
         public addmap()
         {
             CreateMap<MedicineForCreateDTO,Medicine>();
-            CreateMap<UserDTO,User>();
+            CreateMap<UserDTO,User>().ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.RolesId.Select(roleId => new Role { Id = roleId })));
         }
     }
 }

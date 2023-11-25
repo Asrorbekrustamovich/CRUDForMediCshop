@@ -2,6 +2,7 @@
 using CrudforMedicshop.Application.Interfaces;
 using CrudforMedicshop.Domain.Entities;
 using CrudforMedicshop.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -41,6 +42,7 @@ namespace CrudforMedicshop.Controllers
         }
 
         [HttpPost("Create")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Create(MedicineForCreateDTO Medicine)
         {
             Medicine Medicine1 = _mapper.Map<Medicine>(Medicine);
