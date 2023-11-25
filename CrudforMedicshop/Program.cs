@@ -33,6 +33,7 @@ namespace CrudforMedicshop
             builder.Services.AddDbContext<Mydbcontext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IIdentityService, IdentityService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.addmapping();
             builder.Services.AddFluentValidation();
             builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
