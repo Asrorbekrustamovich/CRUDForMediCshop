@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CrudforMedicshop.infrastructure.Services
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthefrationAttributeFilter : Attribute, IAuthorizationFilter
     {
         private readonly string _key;
