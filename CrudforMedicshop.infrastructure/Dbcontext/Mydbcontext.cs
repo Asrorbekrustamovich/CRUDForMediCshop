@@ -20,6 +20,7 @@ namespace CrudforMedicshop.infrastructure.Dbcontext
         {
         }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<permission>Permissions { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }

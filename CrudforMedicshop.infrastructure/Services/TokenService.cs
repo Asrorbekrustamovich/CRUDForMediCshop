@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -63,7 +64,12 @@ namespace CrudforMedicshop.infrastructure.Services
            foreach (var role in user.Roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role,role.Name));
+                foreach (var permission in role.Permissions)
+                {
+                    claims.Add(new Claim("permission", permission.name));
+                }
             }
+          
             var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTKey:Key"]));
             var credentials = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha256);
             double accessTokenLife = double.Parse(_configuration["JWTKey:TokenExpiryTimeInMinutes"]);

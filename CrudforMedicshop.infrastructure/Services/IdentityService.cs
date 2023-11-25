@@ -60,7 +60,7 @@ namespace CrudforMedicshop.infrastructure.Services
         public  async Task<Response<Token>> LoginAsync(Credential credential)
         {
             credential.Password=_tokenService.ComputeSha256hash(credential.Password);
-            User user=_mydbcontext.Users.Include(x=>x.Roles).Where(x=>x.Username.Equals(credential.Username)&&x.Password.Equals(credential.Password)).FirstOrDefault();
+            User user=_mydbcontext.Users.Include(x=>x.Roles).ThenInclude(x=>x.Permissions).Where(x=>x.Username.Equals(credential.Username)&&x.Password.Equals(credential.Password)).FirstOrDefault();
             if (user == null)
             {
                 return new("user not found",404);
