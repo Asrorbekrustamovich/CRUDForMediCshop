@@ -29,7 +29,9 @@ namespace CrudforMedicshop
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddCors();
             builder.Services.AddScoped<Irepository<Medicine>, Repository>();
+            
             builder.Services.AddScoped<Iservice<Medicine>, Service>();
             builder.Services.AddDbContext<Mydbcontext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<ITokenService, TokenService>();
@@ -106,6 +108,7 @@ namespace CrudforMedicshop
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseCors();
             app.UseAuthorization();
 
             app.UseRateLimiter();

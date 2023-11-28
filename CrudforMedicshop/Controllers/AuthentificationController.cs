@@ -6,15 +6,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using CrudforMedicshop.infrastructure.Services;
+using Microsoft.AspNetCore.Cors;
 
 namespace CrudforMedicshop.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("")]
     public class AuthentificationController : ControllerBase
     {
         private readonly IIdentityService _identityService;
-
+        
         public AuthentificationController(IIdentityService identityService)
         {
             _identityService = identityService;
