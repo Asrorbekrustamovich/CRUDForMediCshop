@@ -27,7 +27,7 @@ namespace CrudforMedicshop.infrastructure.Services
             _mapper = mapper;
         }
 
-        public async  Task<Response<Role>> CreateRole(RoleCreateDTO roleDTO)
+        public async  Task<Response<RoleGetDTO>> CreateRole(RoleCreateDTO roleDTO)
         {
            var Role=_dbcontext.Roles.Where(x=>x.Name==roleDTO.Name).FirstOrDefault();
             if(Role!=null)
@@ -35,13 +35,14 @@ namespace CrudforMedicshop.infrastructure.Services
                 return new("Role is already Created");
             }
             var role=_mapper.Map<Role>(roleDTO);
-            _dbcontext.Roles.Add(role);
+            _dbcontext.Roles.Attach(role);
+            var Rolegetbyid=_mapper.Map<RoleGetDTO>(role);
              var rows=_dbcontext.SaveChanges();
             if (rows > 0)
             {
 
 
-                return new(role);
+                return new(Rolegetbyid);
             }
             return new("something went wrong");
 
@@ -58,20 +59,23 @@ namespace CrudforMedicshop.infrastructure.Services
             return false;
         }
 
-        public async Task<IEnumerable<Role>> GetAllRoles()
+        public async Task<IEnumerable<RoleGetDTO>> GetAllRoles()
         {
-            var getall= _dbcontext.Roles.Include(x=>x.Users).Include(x=>x.Permissions).ToList();
-            return getall;
+            var getall = _dbcontext.Roles.Include(x=>x.Permissions);
+            var getalldto=_mapper.Map<IEnumerable<RoleGetDTO>>(getall);
+            return getalldto;
         }
 
-        public async Task<Role> GetbyidRole(int Roleid)
+        public async Task<RoleGetDTO> GetbyidRole(int Roleid)
         {
-          return _dbcontext.Roles.Select(x=>x).Include(x=>x.Permissions).Where(x=>x.Id==Roleid).First();
+          var s=_dbcontext.Roles.Select(x=>x).Include(x=>x.Permissions).Where(x=>x.Id==Roleid).First();
+            var getbyid = _mapper.Map<RoleGetDTO>(s);
+            return getbyid;
         }
 
-        public async Task<bool> UpdateRole(RoleCreateDTO roleDTO)
+        public async Task<bool> UpdateRole(RoleGetDTO roleDTO)
         {
-            var Role1 = _dbcontext.Roles.Select(x => x).Include(x=>x.Permissions).Where(x => x.Id == roleDTO.Id).First();
+            var Role1 = _dbcontext.Roles.Select(x => x).Include(x=>x.Permissions).Where(x => x.Name == roleDTO.Name).First();
             var Role=_mapper.Map<Role>(roleDTO);
             if(Role!=null)
             {

@@ -22,7 +22,7 @@ namespace CrudforMedicshop.Controllers
         }
         [HttpGet("GetallRole")]
         [AuthefrationAttributeFilter("GetallRole")]
-        
+
         public async Task<IActionResult> GetallRole()
         {
             return Ok(await _roleService.GetAllRoles());
@@ -44,7 +44,8 @@ namespace CrudforMedicshop.Controllers
             }
             return Ok("Role Already exist");
         }
-        [HttpDelete]
+        [HttpDelete("DeleteRole")]
+        [AuthefrationAttributeFilter("DeleteRole")]
         public async Task<IActionResult> DeleteRole(int RoleId)
         {
             var Role = _dbcontext.Roles.Where(x => x.Id == RoleId).FirstOrDefault();
@@ -54,8 +55,9 @@ namespace CrudforMedicshop.Controllers
             }
             return Ok("Role not Found");
         }
-        [HttpPatch]
-        public async Task<IActionResult> Update(RoleCreateDTO role)
+        [HttpPatch("UpdateRole")]
+        [AuthefrationAttributeFilter("UpdateRole")]
+        public async Task<IActionResult> UpdateRole(RoleGetDTO role)
         {
             var Role = _dbcontext.Roles.Where(x => x.Id ==role.Id).FirstOrDefault();
             if (Role == null)

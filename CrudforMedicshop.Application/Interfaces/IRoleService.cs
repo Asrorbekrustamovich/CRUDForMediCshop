@@ -10,11 +10,11 @@ namespace CrudforMedicshop.Application.Interfaces
 {
     public interface IRoleService
     {
-        public Task<Response<Role>> CreateRole(RoleCreateDTO role);
-        public Task<bool> UpdateRole(RoleCreateDTO role);
+        public Task<Response<RoleGetDTO>> CreateRole(RoleCreateDTO role);
+        public Task<bool> UpdateRole(RoleGetDTO role);
         public Task<bool> DeleteRole(int Roleid);
-        public Task<Role> GetbyidRole(int Roleid);
-        public Task<IEnumerable<Role>> GetAllRoles();
+        public Task<RoleGetDTO> GetbyidRole(int Roleid);
+        public Task<IEnumerable<RoleGetDTO>> GetAllRoles();
 
     }
 }

@@ -23,10 +23,8 @@ namespace CrudforMedicshop.Controllers
             _mapper = mapper;
         }
         [ HttpGet("GetallMedicine")]
-        //[EnableRateLimiting("fixed")]
         [EnableRateLimiting("Tokenbox")]
         [AuthefrationAttributeFilter("GetallMedicine")]
-        //[EnableRateLimiting("concurrencyPolicy")]
         public async Task< IActionResult> GetallMedicine()
         {
             return Ok(await _iservice.Getall());

@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CrudforMedicshop
 {
@@ -104,7 +105,7 @@ namespace CrudforMedicshop
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseRateLimiter();

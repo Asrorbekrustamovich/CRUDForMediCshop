@@ -38,6 +38,7 @@ namespace CrudforMedicshop.Controllers
             return await _identityService.logoutAsync(Refreshtoken);
         }
         [HttpDelete("DeleteUser")]
+        [AuthefrationAttributeFilter("DeleteUser")]
         public async Task<Response<bool>>DeleteUser(int userid)
         {
             return await _identityService.DeleteUserAsync(userid);
@@ -49,6 +50,7 @@ namespace CrudforMedicshop.Controllers
             return await _identityService.RefreshTokenAsync(token);
         }
         [HttpDelete("Delete")]
+        [AuthefrationAttributeFilter("Delete")]
         public async Task<Response<bool>>Delete(int userid)
         {
             return await _identityService.DeleteUserAsync(userid);

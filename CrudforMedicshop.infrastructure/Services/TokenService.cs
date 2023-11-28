@@ -63,7 +63,7 @@ namespace CrudforMedicshop.infrastructure.Services
             };
            foreach (var role in user.Roles)
             {
-                //claims.Add(new Claim(ClaimTypes.Role,role.Name));
+                claims.Add(new Claim(ClaimTypes.Role,role.Name));
                 foreach (var permission in role.Permissions)
                 {
                     claims.Add(new Claim("permission", permission.name));

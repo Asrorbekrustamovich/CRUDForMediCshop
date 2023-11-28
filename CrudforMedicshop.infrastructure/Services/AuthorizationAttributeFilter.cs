@@ -27,8 +27,8 @@ namespace CrudforMedicshop.infrastructure.Services
                context.Result=new UnauthorizedResult();
                 return;
             }
-            var permissionclaim = context.HttpContext.User.Claims.FirstOrDefault(c=>c.Type.Equals(_key, StringComparison.OrdinalIgnoreCase));
-            if(permissionclaim == null||!permissionclaim.Value.Equals(_value, StringComparison.OrdinalIgnoreCase)) 
+            var permissionclaim = context.HttpContext.User.Claims.FirstOrDefault(c=>c.Type.Equals(_key, StringComparison.OrdinalIgnoreCase)&&c.Value.Equals(_value, StringComparison.OrdinalIgnoreCase));
+            if(permissionclaim == null) 
             {
                 context.Result = new ForbidResult();
                 return;
