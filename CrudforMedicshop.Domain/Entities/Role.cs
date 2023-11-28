@@ -10,7 +10,7 @@ namespace CrudforMedicshop.Domain.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public virtual ICollection<User> Users { get; set; }
-        public virtual ICollection<permission> Permissions { get; set; }
+        public virtual ICollection<User> ?Users { get; set; }
+        public virtual ICollection<permission>? Permissions { get; set; }
     }
 }

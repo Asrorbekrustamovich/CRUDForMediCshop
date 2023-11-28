@@ -4,32 +4,37 @@ using CrudforMedicshop.Domain.Models;
 using CrudforMedicshop.infrastructure.Dbcontext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CrudforMedicshop.infrastructure.Services;
 
 namespace CrudforMedicshop.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
         private readonly Mydbcontext _dbcontext;
 
-        public RoleController(IRoleService roleService)
+        public RoleController(IRoleService roleService, Mydbcontext dbcontext)
         {
             _roleService = roleService;
+            _dbcontext = dbcontext;
         }
-        [HttpGet]
-        public async Task<IActionResult> getallRole()
+        [HttpGet("GetallRole")]
+        [AuthefrationAttributeFilter("GetallRole")]
+        
+        public async Task<IActionResult> GetallRole()
         {
             return Ok(await _roleService.GetAllRoles());
         }
-        [HttpGet]
+        [HttpGet("GetbyidRoles")]
+        [AuthefrationAttributeFilter("GetbyidRoles")]
         public async Task<IActionResult> GetbyidRoles(int Roleid)
         {
             return Ok(await _roleService.GetbyidRole(Roleid));
         }
-        [HttpPost]
+        [HttpPost("CreateRole")]
+        [AuthefrationAttributeFilter("CreateRole")]
         public async Task<IActionResult> CreateRole(RoleCreateDTO roleCreateDTO)
         {
             var Role = _dbcontext.Roles.Where(x => x.Name == roleCreateDTO.Name).FirstOrDefault();

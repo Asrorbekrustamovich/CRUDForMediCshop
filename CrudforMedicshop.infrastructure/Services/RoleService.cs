@@ -3,6 +3,7 @@ using CrudforMedicshop.Application.Interfaces;
 using CrudforMedicshop.Domain.Entities;
 using CrudforMedicshop.Domain.Models;
 using CrudforMedicshop.infrastructure.Dbcontext;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -59,18 +60,18 @@ namespace CrudforMedicshop.infrastructure.Services
 
         public async Task<IEnumerable<Role>> GetAllRoles()
         {
-            var getall= _dbcontext.Roles;
+            var getall= _dbcontext.Roles.Include(x=>x.Users).Include(x=>x.Permissions).ToList();
             return getall;
         }
 
         public async Task<Role> GetbyidRole(int Roleid)
         {
-          return _dbcontext.Roles.Select(x=>x).Where(x=>x.Id==Roleid).First();
+          return _dbcontext.Roles.Select(x=>x).Include(x=>x.Permissions).Where(x=>x.Id==Roleid).First();
         }
 
         public async Task<bool> UpdateRole(RoleCreateDTO roleDTO)
         {
-           var Role1= _dbcontext.Roles.Select(x => x).Where(x => x.Id == roleDTO.Id).First();
+            var Role1 = _dbcontext.Roles.Select(x => x).Include(x=>x.Permissions).Where(x => x.Id == roleDTO.Id).First();
             var Role=_mapper.Map<Role>(roleDTO);
             if(Role!=null)
             {

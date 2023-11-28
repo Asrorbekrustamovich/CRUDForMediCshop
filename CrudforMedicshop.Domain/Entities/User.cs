@@ -13,6 +13,6 @@ namespace CrudforMedicshop.Domain.Entities
         public string Username { get; set; }
         public string Password { get; set; }
         public string phone { get; set; }
-        public virtual ICollection<Role>Roles { get; set; }
+        public virtual ICollection<Role>?Roles { get; set; }=null;
     }
 }

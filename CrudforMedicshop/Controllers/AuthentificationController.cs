@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
+using CrudforMedicshop.infrastructure.Services;
 
 namespace CrudforMedicshop.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class AuthentificationController : ControllerBase
     {
         private readonly IIdentityService _identityService;
@@ -19,36 +19,36 @@ namespace CrudforMedicshop.Controllers
         {
             _identityService = identityService;
         }
-        [HttpPost]
+        [HttpPost("Register")]
         [AllowAnonymous]
         public async Task<Response<(Token,User)>>Register(UserDTO user)
         {
              return await _identityService.RegisterAsync(user);
         }
-        [HttpPost]
+        [HttpPost("Login")]
         [AllowAnonymous]
         public async Task<Response<Token>>Login(Credential credential)
         {
             return await _identityService.LoginAsync(credential);
         }
-        [HttpGet]
-        [Authorize(Roles ="Admin")]
+        [HttpGet("Logout")]
+        [AuthefrationAttributeFilter("Logout")]
         public async Task<(bool,RefreshToken)>Logout(string Refreshtoken)
         {
             return await _identityService.logoutAsync(Refreshtoken);
         }
-        [HttpDelete]
+        [HttpDelete("DeleteUser")]
         public async Task<Response<bool>>DeleteUser(int userid)
         {
             return await _identityService.DeleteUserAsync(userid);
         }
-        [HttpPost]
+        [HttpPost("RefreshToken")]
         [AllowAnonymous]
         public async Task<Response<Token>>RefreshToken(Token token)
         {
             return await _identityService.RefreshTokenAsync(token);
         }
-        [HttpPost]
+        [HttpDelete("Delete")]
         public async Task<Response<bool>>Delete(int userid)
         {
             return await _identityService.DeleteUserAsync(userid);

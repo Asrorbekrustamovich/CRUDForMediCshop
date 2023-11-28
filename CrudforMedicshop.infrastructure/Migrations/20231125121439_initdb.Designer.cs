@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CrudforMedicshop.infrastructure.Migrations
 {
     [DbContext(typeof(Mydbcontext))]
-    [Migration("20231125081105_initdb")]
+    [Migration("20231125121439_initdb")]
     partial class initdb
     {
         /// <inheritdoc />
@@ -108,6 +108,23 @@ namespace CrudforMedicshop.infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("CrudforMedicshop.Domain.Entities.permission", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("id"));
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Permissions");
+                });
+
             modelBuilder.Entity("CrudforMedicshop.Domain.Models.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -147,6 +164,21 @@ namespace CrudforMedicshop.infrastructure.Migrations
                     b.ToTable("RoleUser");
                 });
 
+            modelBuilder.Entity("Rolepermission", b =>
+                {
+                    b.Property<int>("Permissionsid")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("rolesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Permissionsid", "rolesId");
+
+                    b.HasIndex("rolesId");
+
+                    b.ToTable("Rolepermission");
+                });
+
             modelBuilder.Entity("CrudforMedicshop.Domain.Models.RefreshToken", b =>
                 {
                     b.HasOne("CrudforMedicshop.Domain.Entities.User", "User")
@@ -169,6 +201,21 @@ namespace CrudforMedicshop.infrastructure.Migrations
                     b.HasOne("CrudforMedicshop.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Rolepermission", b =>
+                {
+                    b.HasOne("CrudforMedicshop.Domain.Entities.permission", null)
+                        .WithMany()
+                        .HasForeignKey("Permissionsid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CrudforMedicshop.Domain.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("rolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
