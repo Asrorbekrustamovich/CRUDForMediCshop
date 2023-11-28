@@ -49,9 +49,9 @@ namespace CrudforMedicshop.Controllers
         public async Task<IActionResult> DeleteRole(int RoleId)
         {
             var Role = _dbcontext.Roles.Where(x => x.Id == RoleId).FirstOrDefault();
-            if (Role == null)
+            if (Role != null)
             {
-                await _roleService.DeleteRole(RoleId);
+              return Ok( await _roleService.DeleteRole(RoleId));
             }
             return Ok("Role not Found");
         }
