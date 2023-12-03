@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudforMedicshop", "CrudforMedicshop\CrudforMedicshop.csproj", "{120ED622-E17B-4F3D-A1B8-849243C537C4}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudforMedicshop.Domain", "CrudforMedicshop.Domain\CrudforMedicshop.Domain.csproj", "{558F022F-466E-4EAC-9EF7-71C17478F829}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudforMedicshop.Application", "CrudforMedicshop.Application\CrudforMedicshop.Application.csproj", "{EC9FACD1-61FC-48CC-8507-C1B7573BD7CC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudforMedicshop.infrastructure", "CrudforMedicshop.infrastructure\CrudforMedicshop.infrastructure.csproj", "{0AE281A6-25B1-41D5-9108-29C8AAB312C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRUDforMedicShopMVC", "CRUDforMedicShopMVC\CRUDforMedicShopMVC.csproj", "{1B44DB76-93A5-4962-9CC2-C026456E1608}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRUDforMedicShopMVC", "CRUDforMedicShopMVC\CRUDforMedicShopMVC.csproj", "{1B44DB76-93A5-4962-9CC2-C026456E1608}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{120ED622-E17B-4F3D-A1B8-849243C537C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{120ED622-E17B-4F3D-A1B8-849243C537C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{120ED622-E17B-4F3D-A1B8-849243C537C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{120ED622-E17B-4F3D-A1B8-849243C537C4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{558F022F-466E-4EAC-9EF7-71C17478F829}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{558F022F-466E-4EAC-9EF7-71C17478F829}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{558F022F-466E-4EAC-9EF7-71C17478F829}.Release|Any CPU.ActiveCfg = Release|Any CPU
