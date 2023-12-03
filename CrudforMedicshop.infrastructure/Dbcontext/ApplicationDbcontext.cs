@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CrudforMedicshop.infrastructure.Dbcontext
 {
-    public class ApplicationDbcontext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbcontext : IdentityDbContext<ApplicationUser>   
     {
         public ApplicationDbcontext(DbContextOptions options) : base(options)
         {
