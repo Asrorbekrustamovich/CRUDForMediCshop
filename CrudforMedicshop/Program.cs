@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Builder;
 
 namespace CrudforMedicshop
 {
@@ -39,6 +40,8 @@ namespace CrudforMedicshop
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.addmapping();
             builder.Services.AddFluentValidation();
+            builder.Services.AddCors();
+
             builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
             builder.Services.Configure<RateLimiterOptions>(o => o
                  .AddFixedWindowLimiter(policyName: "fixed", options =>
@@ -106,9 +109,13 @@ namespace CrudforMedicshop
                 app.UseSwaggerUI();
             }
 
+            app.UseCors(opt =>
+            {
+                opt.WithOrigins("https://lms.tuit.uz").AllowAnyHeader().AllowAnyMethod();
+            });
             app.UseHttpsRedirection();
             app.UseAuthentication();
-            app.UseCors();
+            
             app.UseAuthorization();
 
             app.UseRateLimiter();

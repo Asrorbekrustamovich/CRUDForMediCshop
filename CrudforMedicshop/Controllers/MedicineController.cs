@@ -4,6 +4,7 @@ using CrudforMedicshop.Domain.Entities;
 using CrudforMedicshop.Domain.Models;
 using CrudforMedicshop.infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -12,6 +13,7 @@ namespace CrudforMedicshop.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors]
     public class MedicineController : ControllerBase
     {
         private readonly Iservice<Medicine> _iservice;
@@ -24,7 +26,7 @@ namespace CrudforMedicshop.Controllers
         }
         [ HttpGet("GetallMedicine")]
         [EnableRateLimiting("Tokenbox")]
-        [AuthefrationAttributeFilter("GetallMedicine")]
+        //[AuthefrationAttributeFilter("GetallMedicine")]
         public async Task< IActionResult> GetallMedicine()
         {
             return Ok(await _iservice.Getall());
