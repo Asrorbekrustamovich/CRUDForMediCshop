@@ -20,6 +20,7 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using CrudforMedicshop.infrastructure.ExceptionHandler;
 
 namespace CrudforMedicshop
 {
@@ -112,6 +113,7 @@ namespace CrudforMedicshop
 
             app.UseAuthorization();
             app.UseAuthentication();
+            app.UseMiddleware<ExceptionMiddlerWare>();
             app.UseRateLimiter();
             app.MapControllers();
 
