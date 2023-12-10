@@ -22,6 +22,5 @@ namespace CrudforMedicshop.Application.mapping
             .ForMember(dest => dest.Permissionids, opt => opt.MapFrom(src => src.Permissions.Select(permission => permission.id)));
         }
     }
- 
-        }
+  }
  
